@@ -1,0 +1,3 @@
+[submodule "cad/lasercut"]
+	path = cad/lasercut
+	url = https://github.com/DaveBerkeley/lasercut
