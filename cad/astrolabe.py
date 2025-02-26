@@ -9,8 +9,6 @@ from lasercut.laser.laser import Arc, Circle, Polygon, Collection, Config, Text
 from lasercut.laser.laser import radians, degrees
 from lasercut.laser.render import DXF, GCODE, SCAD, PDF
 
-import rete
-
 #
 #
 #   http://solarsystem.nasa.gov/planets/earth/facts
@@ -563,71 +561,6 @@ def rear_plate(config):
     return work
 
 #
-#   Star data to export to openscad
-#
-
-stars = [
-    "Sirius",
-    "Arcturus",
-    "Vega",
-    "Capella",
-    "Rigel",
-    "Procyon",
-    "Betelgeuse",
-    "Altair",
-    "Aldebaran",
-    "Spica",
-    "Pollux",
-    "Deneb",
-    "Regulus",
-    "Castor",
-    "Bellatrix",
-    "Elnath",
-    "Alnilam",
-    "Alioth",
-    "Dubhe",
-]
-
-def make_stars(path, config):
-
-    try:
-        import ephem
-    except:
-        # https://rhodesmill.org/pyephem/quick.html
-        raise Exception("needs pyephem")
-
-    f = open(path, "w")
-
-    print("// Auto generated, do not edit", file=f)
-    print(file=f)
-
-    rad_capricorn = config.size
-    rad_equator = r_eq(rad_capricorn)
-
-    print("rad_outer = %s;" % config.size, file=f)
-    print("rad_equator = %s;" % rad_equator, file=f)
-    print(file=f)
-
-    for name in stars:
-        lower = name.lower()
-        s = ephem.star(name)
-        r = r_dec(rad_equator, degrees(s._dec))
-        angle = s._ra
-        x, y = r * math.sin(angle), r * math.cos(angle)
-        print('%s = [ "%s", %s, %s ];' % (lower, name, x, y), file=f)
-
-    print(file=f)
-    print("stars = [ ", end=' ', file=f)
-    for name in stars:
-        lower = name.lower()
-        print('%s,' % lower, end=' ', file=f)
-    print("];", file=f)
-    print(file=f)
-    print("// FIN", file=f)
-
-    f.close()
-
-#
 #
 
 if __name__ == "__main__":
@@ -645,7 +578,6 @@ if __name__ == "__main__":
     p.add_argument('--code', default='dxf', help="|".join(codes.keys()))
     p.add_argument('--lat', type=float, default=50.37, help="latitude")
     p.add_argument('--qcad', action='store_true', help="call qcad to view the output")
-    p.add_argument('--stars', action='store_true')
     p.add_argument('--stdout', action='store_true')
     p.add_argument('--almucantar', type=int, default=5, help="step in degrees of almucantar lines")
     p.add_argument('--azimuth', type=int, default=15, help="step in degrees of azimuth lines")
@@ -708,6 +640,7 @@ if __name__ == "__main__":
 
     if 'rete' in args.part:
         print("Generating rete", file=sys.stderr)
+        import rete
         r = rete.Rete("rete" + ext, config)
         r.draw()
         r.save()
@@ -730,14 +663,6 @@ if __name__ == "__main__":
         p = plate(config)
         work.add(p)
 
-    if args.stars:
-        print("Generating stars", file=sys.stderr)
-        spath = "stars.scad"
-        print("writing to:", spath, file=sys.stderr)
-        make_stars(spath, config)
-
-    #s = config.size * 1.4
-    #work.translate(s, s)
     work.draw(drawing)
     print("Writing to", path, file=sys.stderr)
     drawing.save()
