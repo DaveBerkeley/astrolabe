@@ -1,3 +1,9 @@
 [submodule "cad/lasercut"]
 	path = cad/lasercut
 	url = https://github.com/DaveBerkeley/lasercut
+[submodule "sw/lib/cli"]
+	path = sw/lib/cli
+	url = git@github.com:DaveBerkeley/cli.git
+[submodule "sw/lib/printf"]
+	path = sw/lib/printf
+	url = https://github.com/eyalroz/printf.git
