@@ -7,3 +7,6 @@
 [submodule "sw/lib/printf"]
 	path = sw/lib/printf
 	url = https://github.com/eyalroz/printf.git
+[submodule "sw/panglos"]
+	path = sw/panglos
+	url = https://github.com/DaveBerkeley/panglos.git
