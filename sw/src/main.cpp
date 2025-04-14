@@ -35,7 +35,7 @@
 
 #include "cli/src/cli.h"
 
-#include "cli.h"
+#include "panglos/app/cli.h"
 
 #include "board.h"
 
@@ -119,6 +119,7 @@ static bool init_devices()
         }
     }
 
+#if defined(WIFI)
     // Start mDNS?
     if (Objects::objects->get("net"))
     {
@@ -131,6 +132,7 @@ static bool init_devices()
             Network::start_mdns(strdup(name));
         }
     }
+#endif // WIFI
     
     board_init();
     return true;

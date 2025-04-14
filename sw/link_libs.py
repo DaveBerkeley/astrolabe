@@ -44,6 +44,18 @@ files = [
     'watchdog.cpp',
     'batch.cpp',
     'network.cpp',
+    'date.cpp',
+
+    'app/cli.cpp',
+    'app/cli_cmd.cpp',
+    'app/cli_server.cpp',
+    'app/event.cpp',
+    'app/devices.cpp',
+    'panglos/app/cli.h',
+    'panglos/app/cli_cmd.h',
+    'panglos/app/cli_server.h',
+    'panglos/app/event.h',
+    'panglos/app/devices.h',
 
     'panglos/deque.h',
     'panglos/buffer.h',
@@ -72,6 +84,7 @@ files = [
     'panglos/batch.h',
     'panglos/network.h',
     'panglos/ring_buffer.h',
+    'panglos/date.h',
 
     'drivers/i2c_bitbang.cpp',
     'drivers/mcp23s17.cpp',

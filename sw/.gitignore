@@ -1,4 +1,6 @@
-	.pio/
-	CMakeLists.txt
-	dependencies.lock
-	lib/panglos/
+.pio
+CMakeLists.txt
+dependencies.lock
+lib/panglos
+src/banner.cpp
+managed_components

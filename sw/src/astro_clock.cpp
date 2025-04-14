@@ -1,4 +1,39 @@
 
+
+#if defined(NOTHING)
+
+#include "panglos/debug.h"
+#include "panglos/object.h"
+#include "panglos/device.h"
+
+#include "cli/src/cli.h"
+
+#include "panglos/app/event.h"
+#include "panglos/app/cli_server.h"
+#include "panglos/app/devices.h"
+
+using namespace panglos;
+
+Device _board_devs[] = {
+    //Device("led", 0, gpio_init, (void*) & led_def),
+    Device(0, 0, 0, 0, 0),
+};
+
+void board_init()
+{
+    PO_DEBUG("");
+    
+    if (Objects::objects->get("net"))
+    {
+        EventHandler::add_handler(Event::INIT, net_cli_init, 0);    
+    }
+}
+
+Device *board_devs = _board_devs;
+
+#endif  //  NOTHING
+
+
 #if defined(ASTRO_CLOCK)
 
 #include <driver/gpio.h>
@@ -9,15 +44,16 @@
 #include "panglos/esp32/gpio.h"
 #include "panglos/drivers/motor.h"
 #include "panglos/time.h"
+#include "panglos/date.h"
 
 #include "cli/src/cli.h"
 
-#include "event.h"
+#include "panglos/app/event.h"
+#include "panglos/app/cli_server.h"
+#include "panglos/app/devices.h"
+
 #include "stepper.h"
-#include "devices.h"
-#include "date.h"
 #include "ntp.h"
-#include "cli_server.h"
 #include "board.h"
 
 using namespace panglos;
@@ -25,6 +61,10 @@ using namespace panglos;
     /*
      *
      */
+
+#if defined(ESP32_S2_MINI)
+
+//  STEPPER_MOTOR board
 
 static const GPIO_DEF led_def = { GPIO_NUM_15, ESP_GPIO::OP, false };
 
@@ -55,26 +95,31 @@ const struct STEPPER_DEF s1_def = { m1_names, 4096 };
 
 Device _board_devs[] = {
     Device("led", 0, gpio_init, (void*) & led_def),
+    // leds / opto detectors to detect the rotation of the gear wheels
     Device("led0", 0, gpio_init, (void*) & b0_def),
     Device("led1", 0, gpio_init, (void*) & b1_def),
     Device("sense0", 0, gpio_init, (void*) & b2_def),
     Device("sense1", 0, gpio_init, (void*) & b3_def),
 
-    // Stepper motors
+    // Stepper motors :  4 coils per stepper
     DEV_GPIO("m00", 0, & m00_def),
     DEV_GPIO("m01", 0, & m01_def),
     DEV_GPIO("m02", 0, & m02_def),
     DEV_GPIO("m03", 0, & m03_def),
+
     DEV_GPIO("m10", 0, & m10_def),
     DEV_GPIO("m11", 0, & m11_def),
     DEV_GPIO("m12", 0, & m12_def),
     DEV_GPIO("m13", 0, & m13_def),
 
+    // 2 stepper motors
     Device("step0", m0_names, stepper_init, (void*) & s0_def),
     Device("step1", m1_names, stepper_init, (void*) & s1_def),
 
     Device(0, 0, 0, 0, 0),
 };
+
+#endif // defined(ESP32_S2_MINI)
 
     /*
      *
@@ -296,12 +341,12 @@ static void on_date_time(Clock *clock, struct DateTime *dt)
     const int day = (((h + 12) % 24) * 60) + m;
     const int day_div = 60 * 24;
 
-    const int yd = year_day(y, dt->mm, dt->dd);
-    const int days = days_in_year(y);
+    const int yd = DateTime::year_day(y, dt->mm, dt->dd);
+    const int days = DateTime::days_in_year(y);
 
     // number of days between Winter solstice and New Year
-    const int solstice = year_day(y, 12, 21);
-    const double offset = (days_in_year(y) - solstice) / double(days);
+    const int solstice = DateTime::year_day(y, 12, 21);
+    const double offset = (DateTime::days_in_year(y) - solstice) / double(days);
 
     const double dd = day / double(day_div);
     const double yy = yd / double(days);
@@ -440,7 +485,7 @@ static void goto_cmd_handler(struct CLI *cli, struct CliCommand *cmd)
     }
 
     struct DateTime dt;
-    if (!parse_datetime(s, & dt))
+    if (!dt.parse_datetime(s))
     {
         cli_print(cli, "error parsing '%s'%s", s, cli->eol);
         return;
