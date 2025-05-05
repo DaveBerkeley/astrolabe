@@ -45,6 +45,7 @@ Device *board_devs = _board_devs;
 #include "panglos/drivers/motor.h"
 #include "panglos/time.h"
 #include "panglos/date.h"
+#include "panglos/event_queue.h"
 
 #include "cli/src/cli.h"
 
@@ -125,8 +126,65 @@ Device _board_devs[] = {
      *
      */
 
+class WatchdogTick : public EvQueue::Event
+{
+    Time::tick_t period;
+    EvQueue *eq;
+
+    virtual void run(EvQueue *_eq)
+    {
+        PO_DEBUG("%p", eq);
+
+        if (!eq)
+        {
+            eq = _eq;
+            eq->reschedule(this, Time::get() + period);
+            return;
+        }
+
+        // reboot!
+        ASSERT(0);
+    }
+
+public:
+
+    WatchdogTick(int p)
+    :   period(p),
+        eq(0)
+    {
+    }
+
+    void kick()
+    {
+        //PO_DEBUG("%d", (int) period);
+        if (eq) eq->reschedule(this, Time::get() + period);
+    }
+
+    static WatchdogTick *add(int period)
+    {
+        PO_DEBUG("watchdog period=%d s", (int) period);
+        EvQueue *eq = (EvQueue*) Objects::objects->get("event_queue");
+        ASSERT(eq); 
+        WatchdogTick *tick = new WatchdogTick(period * 100);
+        eq->add(tick);
+        return tick;
+    }
+};
+
+    /*
+     *
+     */
+
 struct Clock
 {
+    WatchdogTick *watchdog;
+
+    void kick()
+    {
+        ASSERT(watchdog);
+        watchdog->kick();
+    }
+
     enum State
     {
         ST_MANUAL,
@@ -166,6 +224,8 @@ struct Clock
     };
 
     Cal cal;
+
+    Clock(WatchdogTick *w) : watchdog(w) { }
 };
 
     /*
@@ -355,6 +415,8 @@ static void on_date_time(Clock *clock, struct DateTime *dt)
 
     dial_goto(clock, 0, day, day_div);
     dial_goto(clock, 1, rete, 360);
+
+    clock->kick();
 
     PO_DEBUG("%04d/%02d/%02d %02d:%02d:%02d %d %d",
             dt->yy,
@@ -566,8 +628,12 @@ void board_init()
     PO_DEBUG("");
 
     EventHandler::add_handler(Event::INIT, astro_cli_init, 0);
+
+    const int poll_rate = 10; // s
+    Time::tick_t period = 100 * poll_rate;
+    WatchdogTick *watchdog = WatchdogTick::add(poll_rate * 10);
  
-    static struct Clock clock;
+    static struct Clock clock(watchdog);
 
     clock.dials[0].motor = (Stepper*) Objects::objects->get("step0");
     clock.dials[0].sense = (GPIO*) Objects::objects->get("sense0");
@@ -581,9 +647,10 @@ void board_init()
     cal_start(& clock, 0);
     run_timers(step_cb, & clock);
 
+    watchdog->kick();
+
     if (Objects::objects->get("net"))
     {
-        Time::tick_t period = 100 * 10;
         ntp_start(period);
         EventHandler::add_handler(Event::INIT, net_cli_init, 0);    
         EventHandler::add_handler(Event::DATE_TIME, on_date_time, & clock);

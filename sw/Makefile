@@ -1,7 +1,9 @@
 
 PROJECT=ASTRO_CLOCK
+#PROJECT=NOTHING
 
 TARGET=esp32-s2-mini
+#TARGET=esp32-dev
 
 MODE = run
 #MODE = debug
