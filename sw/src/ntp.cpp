@@ -100,7 +100,6 @@ static bool on_init(void *arg, Event *, Event::Queue *q)
     sntp_set_sync_interval(period_ms);
 
 #if (ESP_IDF_VERSION_MAJOR == 5) && (ESP_IDF_VERSION_MINOR > 0)
-#pragma message("" ## ESP_IDF_VERSION_MINOR)
     esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
     esp_sntp_setservername(0, strdup(server));
     esp_sntp_init();

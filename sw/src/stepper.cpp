@@ -63,7 +63,7 @@ struct StepperItem {
     static struct StepperItem **get_next(struct StepperItem *item) { return & item->next; }
 };
 
-static List<struct StepperItem*> steppers(StepperItem::get_next);
+static panglos::List<struct StepperItem*> steppers(StepperItem::get_next);
 
     /*
      *

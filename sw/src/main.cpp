@@ -85,7 +85,7 @@ static bool init_devices()
 {
     ASSERT(Objects::objects);
 
-    List<Device*> done(Device::get_next);
+    panglos::List<Device*> done(Device::get_next);
 
     bool verbose = true;
 
@@ -105,7 +105,7 @@ static bool init_devices()
 
     {
         //  Initialise any board specific devices
-        List<Device*> devices(Device::get_next);
+        panglos::List<Device*> devices(Device::get_next);
 
         for (Device *d = board_devs; d->name; d++)
         {
