@@ -23,3 +23,16 @@ in Oxford.
 
 ![Astrolabe](docs/DSC04624.JPG)
 
+My other favourite is the Painswick astrolabe.
+The decoration is fairly sparse, but one star is marked with a dragon's head.
+The star names are Arabic, the signs of the Zodiac in Latin.
+The hour markings are just alphabetic, so it predates the adoption of Arabic numerals for hour numbers.
+But it does have Arabic numerals on the plate.
+Perhaps the mater and the plate were made by different people?
+The Sun / Hour marker spans the instrument. The Arabic one above just has half.
+I'm not sure what the purpose of the whole span is.
+![Painswick astrolabe](docs/dxf_20260808190639.jpeg)
+
+I've been interested in these instruments since I was a child. 
+The first ones I made were done with pen and paper, using compasses, ruler and a pocket calculator.
+
