@@ -21,6 +21,14 @@ in the collection of the
 [History of Science Museum](https://www.hsm.ox.ac.uk)
 in Oxford.
 
+"This is the oldest astrolabe in the Museum's collection and one of the earliest astrolabes in the world.
+It was made during the so-called "Islamic Golden Age", 
+a period in which scholarship was actively persued 
+and advanced by the caliphal court and the nobility based in Baghdad.
+It is signed by Khafîf who defines himself as the "apprentice of Ali bin Isa".
+Ibn Isa was a famous astronomer and astrolabe maker who wrote one of the earliest treatises on the astrolabe
+and lived in the region of modern-day Syria in the mid 800s CE."
+
 ![Astrolabe](docs/DSC04624.JPG)
 
 My other favourite is the Painswick astrolabe.
@@ -32,6 +40,8 @@ Perhaps the mater and the plate were made by different people?
 The Sun / Hour marker spans the instrument. The Arabic one above just has half.
 I'm not sure what the purpose of the whole span is.
 ![Painswick astrolabe](docs/dxf_20260808190639.jpeg)
+
+The photos are my own.
 
 I've been interested in these instruments since I was a child. 
 The first ones I made were done with pen and paper, using compasses, ruler and a pocket calculator.
